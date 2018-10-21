@@ -1,4 +1,4 @@
-package umdslacker.clubactivitytracker;
+package umdslacker.FundFinder;
 
 import org.junit.Test;
 

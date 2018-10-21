@@ -1,4 +1,4 @@
-package umdslacker.clubactivitytracker;
+package umdslacker.FundFinder;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,20 +23,24 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnInfoWindowClickListener,GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
+
     LocationManager locationManager;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    Marker marker,marker1;
+    Marker marker,marker1,marker2,marker3;
     LocationListener locationListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -49,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         }
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -56,18 +62,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double longitude = location.getLongitude();
                 double l1 = 39.2541;
                 double long1 = -76.7133;
-                LatLng latlng1 = new LatLng(l1,long1);
+                LatLng latlng2 = new LatLng(39.2778,-76.8252);
+                LatLng latLng1 = new LatLng(l1,long1);
+                LatLng latLng3 = new LatLng(39.2868,-76.7613);
                 //get the location name from latitude and longitude
                 Geocoder geocoder = new Geocoder(getApplicationContext());
                 try {
                     List<Address> addresses =
                             geocoder.getFromLocation(latitude, longitude, 1);
-                    String result = addresses.get(0).getLocality()+":";
-                    result += addresses.get(0).getCountryName();
+
                     LatLng latLng = new LatLng(latitude, longitude);
-                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title("UMBC").snippet("Fundraising for breast Cancer"));
-                    marker1 = mMap.addMarker(new MarkerOptions().position(latlng1).title("IND FUNDRASIER").snippet("Chick Fil A night fundraiser"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title("My location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    marker1 = mMap.addMarker(new MarkerOptions().position(latLng1).title("IND FUNDRASIER").snippet("Chick Fil A night fundraiser for breast cancer"));
+                    marker2 = mMap.addMarker(new MarkerOptions().position(latlng2).title("CSA bubble tea").snippet("Bubble Tea for literacy "));
+                    marker3 = mMap.addMarker(new MarkerOptions().position(latLng3).title("Mongolian BBQ Fundraiser").snippet("Fundraising for Mongolian students"));
+
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
 
 
                 } catch (IOException e) {
@@ -109,14 +119,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnMapLongClickListener(this);
         // Add a marker in Sydney and move the camera
+
 
 
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this,"Info window clicked", Toast.LENGTH_SHORT).show();
+
+
+        marker.showInfoWindow();
     }
+
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Event").snippet("Enter description");
+        mMap.addMarker(markerOptions);
+    }
+
+
 }

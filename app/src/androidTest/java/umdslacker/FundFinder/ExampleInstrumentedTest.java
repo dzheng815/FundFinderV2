@@ -1,4 +1,4 @@
-package umdslacker.clubactivitytracker;
+package umdslacker.FundFinder;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
